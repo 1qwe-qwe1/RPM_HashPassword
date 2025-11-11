@@ -10,17 +10,17 @@ namespace pr5_HashPassword
 {
     public class Helper
     {
-        private Entities _context; 
+        private Entities1 _context; 
 
         public Helper()
         {
-            _context = new Entities();
+            _context = new Entities1();
         }
 
         
-        public static Entities GetContext()
+        public static Entities1 GetContext()
         {
-            return new Entities();
+            return new Entities1();
         }
 
         public void CreateUser(Users user, string password)
@@ -32,8 +32,10 @@ namespace pr5_HashPassword
             _context.SaveChanges();
         }
 
-        
-
+        public bool UserExists(string login)
+        {
+            return _context.Users.Any(u => u.Login == login);
+        }
 
     }
 }

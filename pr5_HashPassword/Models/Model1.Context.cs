@@ -13,10 +13,10 @@ namespace pr5_HashPassword.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class Entities : DbContext
+    public partial class Entities1 : DbContext
     {
-        public Entities()
-            : base("name=Entities")
+        public Entities1()
+            : base("name=Entities1")
         {
         }
     
@@ -36,6 +36,7 @@ namespace pr5_HashPassword.Models
         public virtual DbSet<RecyclingActs> RecyclingActs { get; set; }
         public virtual DbSet<RecyclingCompanies> RecyclingCompanies { get; set; }
         public virtual DbSet<RecyclingContracts> RecyclingContracts { get; set; }
+        public virtual DbSet<Roles> Roles { get; set; }
         public virtual DbSet<SaleItems> SaleItems { get; set; }
         public virtual DbSet<ServiceCategories> ServiceCategories { get; set; }
         public virtual DbSet<ServiceOrders> ServiceOrders { get; set; }

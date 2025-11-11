@@ -14,38 +14,94 @@ namespace pr5_HashPassword
         {
             Console.WriteLine("Система регистрации пользователей");
 
-            Console.Write("Введите логин: ");
-            string login = Console.ReadLine();
+            int attempts = 3;
+            bool success = false;
 
-            Console.Write("Введите пароль: ");
-            string password = Console.ReadLine();
-
-            string hashedPassword = Hash.HashPassword(password);
-
-            Users newUser = new Users
+            while (attempts > 0 && !success)
             {
-                Login = login,
-                PasswordHash = hashedPassword,
-                RegistrationDate = DateTime.Now
-            };
+                Console.Write("Введите логин: ");
+                string login = Console.ReadLine();
 
-            try
-            {
-                Helper helper = new Helper();
-                helper.CreateUser(newUser, password);
+                // Проверка логина
+                if (string.IsNullOrWhiteSpace(login))
+                {
+                    Console.WriteLine("Ошибка: Логин не может быть пустым!");
+                    continue;
+                }
 
-                Console.WriteLine($"Пользователь {newUser.Login} создан!");
-                Console.WriteLine($"Хеш пароля: {newUser.PasswordHash}");
+                if (login.Contains(" "))
+                {
+                    Console.WriteLine("Ошибка: Логин не может содержать пробелы!");
+                    continue;
+                }
+
+                if (login.Length < 4)
+                {
+                    Console.WriteLine("Ошибка: Логин должен содержать минимум 4 символа!");
+                    continue;
+                }
+
+                Console.Write("Введите пароль: ");
+                string password = Console.ReadLine();
+
+                // Проверка пароля
+                if (string.IsNullOrWhiteSpace(password))
+                {
+                    Console.WriteLine("Ошибка: Пароль не может быть пустым!");
+                    continue;
+                }
+
+                if (password.Contains(" "))
+                {
+                    Console.WriteLine("Ошибка: Пароль не может содержать пробелы!");
+                    continue;
+                }
+
+                if (password.Length < 6)
+                {
+                    Console.WriteLine("Ошибка: Пароль должен содержать минимум 6 символов!");
+                    continue;
+                }
+
+                string hashedPassword = Hash.HashPassword(password);
+
+                Users newUser = new Users
+                {
+                    Login = login,
+                    PasswordHash = hashedPassword,
+                    RegistrationDate = DateTime.Now
+                };
+
+                try
+                {
+                    Helper helper = new Helper();
+
+                    if (helper.UserExists(login))
+                    {
+                        attempts--;
+                        Console.WriteLine($"Ошибка: Пользователь с логином '{login}' уже существует! Осталось попыток: {attempts}");
+                        continue;
+                    }
+
+                    helper.CreateUser(newUser, password);
+                    success = true;
+
+                    Console.WriteLine($"Пользователь {newUser.Login} создан!");
+                    Console.WriteLine($"Хеш пароля: {newUser.PasswordHash}");
+                }
+                catch (Exception ex)
+                {
+                    attempts--;
+                    Console.WriteLine($"Ошибка при сохранении в БД: {ex.Message} Осталось попыток: {attempts}");
+                }
             }
-            catch (Exception ex)
+
+            if (!success)
             {
-                Console.WriteLine($"Ошибка при сохранении в БД: {ex.Message}");
+                Console.WriteLine("Регистрация не удалась. Попробуйте позже.");
             }
 
             Console.ReadKey();
-
-            Console.WriteLine($"Пользователь {newUser.Login} создан!");
-            Console.WriteLine($"Хеш пароля: {newUser.PasswordHash}");
         }
     }
 }

@@ -11,16 +11,11 @@ namespace HashPasswords
     {
         public static string HashPassword(string password)
         {
-            using (SHA256 sha256Hash = SHA256.Create())
+            using (SHA256 shs256Hash = SHA256.Create())
             {
-                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(password));
-
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    builder.Append(bytes[i].ToString("x2")); 
-                }
-                return builder.ToString();
+                byte[] sourceBytePassword = Encoding.UTF8.GetBytes(password);//password принимается методом в виде аргумента
+                byte[] hash = shs256Hash.ComputeHash(sourceBytePassword);
+                return BitConverter.ToString(hash).Replace("-", String.Empty); //Возвращаем методом строковое значение
             }
         }
 
